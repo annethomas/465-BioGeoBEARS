@@ -334,7 +334,14 @@ for(tr in sub_trees_endemic){
 }
 dev.off()
 
+#exclude extra nodes in Hierochloe subtree (drops one Hierochloe)
 sub_trees_endemic[[8]]$mrca = 633
+
+#do chionochloa
+sub_trees_endemic[[4]]$mrca
+ape::write.tree(extract.clade(tree,502),file="chionochloa.newick")
+
+trfn = "chionochloa.newick"
 
 #######################################################
 # Geography file
@@ -393,6 +400,17 @@ tipranges
 # Set the maximum number of areas any species may occupy; this cannot be larger 
 # than the number of areas you set up, but it can be smaller.
 max_range_size = 4
+
+####chionochloa
+nz_states = read.csv("NZ_poaceae_endemics_areas.csv",na.strings=c("", "NA"),skip=3,header=TRUE)[1:191,]
+nz_states_chionochloa = nz_states[which(strsplit(as.character(unlist(nz_states[,"Species"])),'\\s') %>% lapply('[[', 1) == "Chionochloa"),]
+write(paste(nrow(nz_states_chionochloa),6,"(A B C D E F)",sep="   "),file = "chionochloa_geog.phylip")
+for(r in 1:nrow(nz_states_chionochloa)){
+  presence_str = paste(as.numeric(!is.na(nz_states_chionochloa[r,4:9])),collapse="")
+  species = str_replace_all(nz_states_chionochloa[r,"Species"]," ","_")
+  write(paste(species,presence_str,sep="   "),file = "chionochloa_geog.phylip",append=TRUE)
+}
+
 
 ####################################################
 ####################################################
