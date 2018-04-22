@@ -1,5 +1,8 @@
+#plot customized trees from BioGeoBEARS runs
+
 source('C:/Users/aet_a/OneDrive/Documents/BYU/2018a Winter/Bio465/465-BioGeoBEARS/my_plot_BioGeoBEARS_results.R')
 
+#clean out past runs
 rm(list=ls(pattern="^res"))
 
 #Chionochloa
@@ -48,7 +51,7 @@ plot_BioGeoBEARS_results(results_object, analysis_titletxt, addl_params=list("j"
 #plot_BioGeoBEARS_results(results_object, analysis_titletxt, addl_params=list("j"), plotwhat="pie", label.offset=0.45, tipcex=0.7, statecex=0.7, splitcex=0.6, titlecex=0.8, plotsplits=TRUE, cornercoords_loc=scriptdir, include_null_range=TRUE, tr=tr, tipranges=tipranges)
 
 dev.off()
-#Poa
+#Poa (Figure 2)
 # Setup
 setwd("C:/Users/aet_a/OneDrive/Documents/BYU/2018a Winter/Bio465/465-BioGeoBEARS/Poa")
 load("Poa_DEC+J_M0_unconstrained_v1.Rdata")

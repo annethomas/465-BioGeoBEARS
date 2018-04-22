@@ -1,6 +1,9 @@
+###Write a phylip file for BioGeoBEARS with geographical areas for species in a given tree.
+
 library(dplyr)
 library(stringr)
 
+#csv of occurrences for all endemic Poaceae 
 nz_states = read.csv("C:/Users/aet_a/OneDrive/Documents/BYU/2018a Winter/Bio465/465-BioGeoBEARS/NZ_poaceae_endemics_areas.csv",na.strings=c("", "NA"),skip=3,header=TRUE)[1:191,]
 
 write_phylip = function(tree){

@@ -1,34 +1,34 @@
+#Script for loading and filtering of Poaceae phylogeny by endemic genus sub-clades
 library(dplyr)
 library(stringr)
 
+#filename of full Poaceae tree in Nexus file
 trfn = np(paste0("C:/Users/aet_a/OneDrive/Documents/BYU/2018a Winter/Bio465/465-BioGeoBEARS/","\\NZ.Poaceae.2gene.v3.tree"))
 
-# Look at the raw Newick file:
+# Look at the raw tree file:
 moref(trfn)
 
 # Look at your phylogeny:
 tree = read.nexus(trfn)
-pdf("tree.pdf",cex=.1)
 plot(tree)
-#title("Example Psychotria phylogeny from Ree & Smith (2008)")
+title("New Zealand Poaceae")
 axisPhylo() # plots timescale
-dev.off()
 
-#get most recent common ancestors for whole tree
+#get most recent common ancestors for whole tree (takes a while--alternatively, load from 'NZ_poaceae_mrca.Rdata')
 mrca = mrca(tree)
 save(mrca, file='NZ_poaceae_mrca.Rdata')
-poaceae = read.csv("NZ.Poaceae.csv",skip=3,header=T)
 
+#read in list of Poaceae species to filter endemics
+poaceae = read.csv("NZ.Poaceae.csv",skip=3,header=T)
 endemics = filter(poaceae,Biostatus=="E")
-#endemics[,4] = paste(unlist(strsplit(as.character(unlist(endemics[,"Species"])),'\\s')),collapse="_")
 
 reformat = function(x){
   return(paste(unlist(strsplit(as.character(unlist(x),'\\s')),collapse="_")))
 }
-# ddply(endemics[,"Species"],reformat(x))
-# 
-# agrostis_lachnagrostis=extract.clade(tree,665)
+
+#extract list of genera from endemic species
 genera = strsplit(as.character(unlist(endemics[,"Species"])),'\\s') %>% lapply('[[', 1) %>% unique() %>% as.character()
+#extract species names from tree/mrca matrix
 tree_names = row.names(mrca) %>% strsplit("_")
 
 #find most recent common ancestor for each endemic genera
@@ -42,13 +42,13 @@ for(genus in genera){
     ancestors = unique(c(sub_matrix))
     lca = min(ancestors,na.rm = TRUE)
     sub_tree = list(genus=genus, sub_matrix = sub_matrix,ancestors=ancestors,mrca=lca)
-    #assign(genus,list(sub_matrix = sub_matrix,ancestors=ancestors,mrca=lca))
     sub_trees = c(sub_trees,list(sub_tree))
   }else print("1 or fewer")
 }
 
 
-#find most recent common ancestor of endemic species within each genera
+#find most recent common ancestor of endemic species within each genera and create subtree
+#also prune non-endemics
 all_species = str_replace_all(row.names(mrca),"_"," ")
 sub_trees_endemic = list()
 for(genus in genera){
@@ -67,13 +67,13 @@ for(genus in genera){
     ancestors = unique(c(sub_matrix))
     lca = min(ancestors,na.rm = TRUE)
     sub_tree = list(genus=genus, sub_matrix = sub_matrix,ancestors=ancestors,mrca=lca)
-    #assign(genus,list(sub_matrix = sub_matrix,ancestors=ancestors,mrca=lca))
-    sub_trees_endemic = c(sub_trees_endemic,list(sub_tree))
   }else print("1 or fewer")
 }
 
+#handy way to re-extract genera
 lapply(sub_trees_endemic,'[[', 1)
 
+#create pdf of every subtree
 pdf("endemic_subtrees.pdf")
 
 for(tr in sub_trees_endemic){
@@ -110,17 +110,10 @@ sub_trees_endemic[[8]]$mrca = 633
 
 save(sub_trees_endemic,file="endemic_subtrees.Rdata")
 
-#do chionochloa
+#edit chionochloa
 sub_trees_endemic[[4]]$mrca
 ch.tree = extract.clade(tree,502)
 ch.tree=drop.tip(ch.tree,"Chionochloa_beddiei_sub")
 ch.tree=drop.tip(ch.tree,"Chionochloa_nivifera")
 ape::write.tree(ch.tree,file="chionochloa.newick")
 
-
-trfn = "chionochloa.newick"
-ch.tree = read.tree("chionochloa.newick")
-
-#rytidosperma
-
-ry.tree = extract.clade(tree,sub_trees_endemic[[14]]$mrca)

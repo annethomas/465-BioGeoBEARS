@@ -1,3 +1,6 @@
+#Runs set of BioGeoBears models for each genus of interest
+
+#necessary calls to setup BioGeoBEARS
 library(optimx) 
 library(FD)       # for FD::maxent() (make sure this is up-to-date)
 library(snow)     # (if you want to use multicore functionality; some systems/R versions prefer library(parallel), try either)
@@ -33,10 +36,13 @@ calc_loglike_sp = compiler::cmpfun(calc_loglike_sp_prebyte)    # crucial to fix 
 calc_independent_likelihoods_on_each_branch = compiler::cmpfun(calc_independent_likelihoods_on_each_branch_prebyte)
 # slight speedup hopefully
 
+#run model for each genus (in BioGeoBEARS_generic.R) and save results
+
 genus = "Chionochloa"
 trfn = "chionochloa.newick"
 setwd("C:/Users/aet_a/OneDrive/Documents/BYU/2018a Winter/Bio465/465-BioGeoBEARS/Chionochloa")
 geogfn = "chionochloa_geog.phylip"
+#runs the models
 source("../BioGeoBEARS_generic.R")
 ch.restable = read.table("Chionochloa_restable_AIC_rellike.txt")
 write.csv(ch.restable,file="Chionochloa_restable_AIC.csv")

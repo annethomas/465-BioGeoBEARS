@@ -1,6 +1,7 @@
-#initialize trfn and and geogfn genus outside of script
+#Script modified from Matzke's 2013 tutorial (http://phylo.wikidot.com/biogeobears#toc31)
+#to run a series of BioGeoBEARS model for generic input data and save the output
 
-
+###Note: initialize trfn and and geogfn genus outside of script (in run_BioGeoBEARS.R)
 if(!exists("trfn")|!exists("genus")){
   print("Missing filenames")
 }else{

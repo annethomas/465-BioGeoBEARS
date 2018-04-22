@@ -1,3 +1,5 @@
+#A slightly modified version of the function from the BioGeoBEARS package for easier customization of plotting
+
 plot_BioGeoBEARS_results=function(results_object, analysis_titletxt=NULL, 
                                   addl_params=list(), plotwhat="text", label.offset=NULL,
                                   tipcex=0.8, statecex=0.7, splitcex=0.6, titlecex=0.8, 
